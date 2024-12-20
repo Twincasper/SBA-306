@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -40,4 +41,22 @@ public class Course {
     @ManyToMany(mappedBy = "courses", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     private Set<Student> students;
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Course course = (Course) obj;
+        return id == course.id &&
+                Objects.equals(name, course.name) &&
+                Objects.equals(instructor, course.instructor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, instructor);
+    }
 }
