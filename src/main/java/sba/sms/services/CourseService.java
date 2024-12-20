@@ -29,11 +29,21 @@ public class CourseService implements CourseI {
 
     @Override
     public Course getCourseById(int courseId) {
-        return null;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+        Course course = (Course) session.get(Course.class, courseId);
+        tx.commit();
+        session.close();
+        return course;
     }
 
     @Override
     public List<Course> getAllCourses() {
-        return List.of();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            List<Course> courseList = session.createQuery("from Course", Course.class).getResultList();
+            tx.commit();
+            return courseList;
+        }
     }
 }
