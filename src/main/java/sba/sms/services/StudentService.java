@@ -13,6 +13,7 @@ import sba.sms.utils.HibernateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * StudentService is a concrete class. This class implements the
@@ -53,7 +54,9 @@ public class StudentService implements StudentI {
 
     @Override
     public boolean validateStudent(String email, String password) {
-        return false;
+        return Optional.ofNullable(getStudentByEmail(email))
+                .map(s -> s.getPassword().equals(password))
+                .orElse(false);
     }
 
     @Override
