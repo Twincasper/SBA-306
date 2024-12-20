@@ -45,8 +45,25 @@ public class Student {
             inverseJoinColumns = @JoinColumn(name = "courses_id"))
     Set<Course> courses;
 
-
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Student)) {
+            return false;
+        }
+        Student student = (Student) obj;
+        return Objects.equals(email, student.email) &&
+                Objects.equals(name, student.name) &&
+                Objects.equals(instructor, student.instructor);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, name, instructor);
+    }
+}
 
 
 

@@ -46,7 +46,7 @@ public class Course {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof Course)) {
             return false;
         }
         Course course = (Course) obj;
