@@ -45,6 +45,9 @@ public class StudentService implements StudentI {
 
     @Override
     public Student getStudentByEmail(String email) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+        Student student = (Student) session.get(Student.class, email);
         return null;
     }
 

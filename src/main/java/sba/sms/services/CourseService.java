@@ -31,10 +31,10 @@ public class CourseService implements CourseI {
     public Course getCourseById(int courseId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
-        Course course = (Course) session.get(Course.class, courseId);
+        Course matchedCourse = (Course) session.get(Course.class, courseId);
         tx.commit();
         session.close();
-        return course;
+        return matchedCourse;
     }
 
     @Override
