@@ -26,14 +26,21 @@ public class StudentService implements StudentI {
     @Override
     public List<Student> getAllStudents() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-
         Transaction tx = session.beginTransaction();
-        return List.of();
+        List<Student> students = new ArrayList<>();
+        Query<Student> studentQuery = session.createQuery("from Student", Student.class);
+        students = studentQuery.getResultList();
+        tx.commit();
+        return students;
     }
 
     @Override
     public void createStudent(Student student) {
-
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+        session.persist(student);
+        tx.commit();
+        session.close();
     }
 
     @Override
