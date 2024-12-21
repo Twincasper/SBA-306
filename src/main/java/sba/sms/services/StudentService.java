@@ -48,8 +48,7 @@ public class StudentService implements StudentI {
     public Student getStudentByEmail(String email) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
-        Student student = (Student) session.get(Student.class, email);
-        return null;
+        return (Student) session.get(Student.class, email);
     }
 
     @Override
@@ -61,7 +60,19 @@ public class StudentService implements StudentI {
 
     @Override
     public void registerStudentToCourse(String email, int courseId) {
-
+        // find the student first and then find the course by id, then use lombok getter and add method to add that course
+        // Maybe check first if the course is already assigned
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+        Student studentRegistering = getStudentByEmail(email);
+        Course courseRegistering = session.get(Course.class, courseId);
+        if (!studentRegistering.getCourses().contains(courseRegistering)) {
+            studentRegistering.getCourses().add(courseRegistering);
+        } else {
+            System.out.println("You already registered to the following course silly: " + courseRegistering);
+        }
+        tx.commit();
+        session.close();
     }
 
     @Override
