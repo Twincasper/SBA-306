@@ -16,7 +16,6 @@ import java.util.Set;
 @ToString(exclude = "courses")
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 
 
 /**
@@ -35,15 +34,24 @@ public class Student {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
+    @Column(name = "password",length = 50, nullable = false)
+    private String password;
+
     @Column(name = "instructor", length = 50, nullable = false)
     private String instructor;
 
-    @ManyToMany(mappedBy = "courses", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "student_courses",
             joinColumns = @JoinColumn(name = "student_email"),
             inverseJoinColumns = @JoinColumn(name = "courses_id"))
     Set<Course> courses;
+
+    public Student(String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -63,6 +71,7 @@ public class Student {
     public int hashCode() {
         return Objects.hash(email, name, instructor);
     }
+
 }
 
 

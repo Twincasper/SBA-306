@@ -14,7 +14,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = "student")
+@ToString(exclude = "students")
 
 /**
  * Course is a POJO, configured as a persistent class that represents (or maps to) a table
