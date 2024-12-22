@@ -57,7 +57,7 @@ public class StudentService implements StudentI {
     @Override
     public boolean validateStudent(String email, String password) {
         return Optional.ofNullable(getStudentByEmail(email))
-                .map(s -> s.getPassword().equals(password))
+                .map(studentInstance -> studentInstance.getPassword().equals(password))
                 .orElse(false);
     }
 
