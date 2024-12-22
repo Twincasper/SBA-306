@@ -48,9 +48,10 @@ public class StudentService implements StudentI {
     public Student getStudentByEmail(String email) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
+        Student student = (Student) session.get(Student.class, email);
         tx.commit();
         session.close();
-        return (Student) session.get(Student.class, email);
+        return student;
     }
 
     @Override
@@ -68,11 +69,13 @@ public class StudentService implements StudentI {
         Transaction tx = session.beginTransaction();
         Student studentRegistering = getStudentByEmail(email);
         Course courseRegistering = session.get(Course.class, courseId);
+
         if (!studentRegistering.getCourses().contains(courseRegistering)) {
-            studentRegistering.getCourses().add(courseRegistering);
+            studentRegistering.addCourse(courseRegistering);
         } else {
             System.out.println("You already registered to the following course silly: " + courseRegistering);
         }
+
         tx.commit();
         session.close();
     }

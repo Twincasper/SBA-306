@@ -37,15 +37,17 @@ public class Student {
     @Column(name = "password",length = 50, nullable = false)
     private String password;
 
-    @Column(name = "instructor", length = 50, nullable = false)
-    private String instructor;
-
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "student_courses",
             joinColumns = @JoinColumn(name = "student_email"),
             inverseJoinColumns = @JoinColumn(name = "courses_id"))
     Set<Course> courses;
+
+    public void addCourse(Course course){
+        this.courses.add(course);
+        course.getStudents().add(this);
+    }
 
     public Student(String email, String name, String password) {
         this.email = email;
@@ -63,13 +65,12 @@ public class Student {
         }
         Student student = (Student) obj;
         return Objects.equals(email, student.email) &&
-                Objects.equals(name, student.name) &&
-                Objects.equals(instructor, student.instructor);
+                Objects.equals(name, student.name) && Objects.equals(password, student.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, name, instructor);
+        return Objects.hash(email, name, password);
     }
 
 }

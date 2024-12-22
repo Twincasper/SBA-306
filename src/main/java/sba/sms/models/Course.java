@@ -59,4 +59,11 @@ public class Course {
     public int hashCode() {
         return Objects.hash(id, name, instructor);
     }
+
+    public void addStudent(Student student) {
+        if (!this.students.contains(student)) {
+            this.students.add(student);
+            student.getCourses().add(this);
+        }
+    }
 }
