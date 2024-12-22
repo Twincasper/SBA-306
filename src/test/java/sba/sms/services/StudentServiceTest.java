@@ -21,15 +21,22 @@ import static org.assertj.core.api.Assertions.*;
 class StudentServiceTest {
 
     static StudentService studentService;
-    static List<Student> testStudents; // Static list to track test students
+    static List<Student> testStudents;
 
     @BeforeAll
     static void beforeAll() {
         studentService = new StudentService();
-        CommandLine.addData(); // Assuming this adds initial data
 
-        // Initialize test students
-        testStudents = Arrays.asList(
+        CommandLine.addData();
+    }
+
+    @Test
+    void getAllStudents() {
+        // Fetch all students
+        List<Student> actualStudents = studentService.getAllStudents();
+
+        // Ensure the database contains the expected students
+        List<Student> expectedStudents = List.of(
                 new Student("naruto.uzumaki@gmail.com", "Naruto Uzumaki", "password"),
                 new Student("sasuke.uchiha@gmail.com", "Sasuke Uchiha", "password"),
                 new Student("sakura.haruno@gmail.com", "Sakura Haruno", "password"),
@@ -38,26 +45,15 @@ class StudentServiceTest {
                 new Student("hinata.hyuga@gmail.com", "Hinata Hyuga", "password")
         );
 
-        // Save all test students to the database using a stream
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction tx = session.beginTransaction();
-            testStudents.stream().forEach(session::persist); // Stream and save each student
-            tx.commit();
-        }
-    }
-
-    @Test
-    void getAllStudents() {
-        // Ensure all students are present in the database
-        assertThat(studentService.getAllStudents()).hasSameElementsAs(testStudents);
+        // Assert that the fetched students match the expected ones
+        assertThat(actualStudents).hasSameElementsAs(expectedStudents);
     }
 
     @AfterAll
     static void afterAll() {
-        // Remove all test students from the database using a stream
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction tx = session.beginTransaction();
-            testStudents.stream().forEach(session::remove); // Stream and delete each student
+        try (var session = HibernateUtil.getSessionFactory().openSession()) {
+            var tx = session.beginTransaction();
+            session.createMutationQuery("DELETE FROM Student").executeUpdate();
             tx.commit();
         }
     }

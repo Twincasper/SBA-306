@@ -11,21 +11,25 @@ public class CommandLine {
     private static final String PASSWORD = "password";
 
 
-    public static void addData(){
+    public static void addData() {
         StudentService studentService = new StudentService();
         CourseService courseService = new CourseService();
-        String instructor = "Kakashi Sensei";
-        studentService.createStudent(new Student("reema@gmail.com", "reema brown", PASSWORD));
-        studentService.createStudent(new Student("annette@gmail.com", "annette allen", PASSWORD));
-        studentService.createStudent(new Student("anthony@gmail.com", "anthony gallegos", PASSWORD));
-        studentService.createStudent(new Student("ariadna@gmail.com", "ariadna ramirez", PASSWORD));
-        studentService.createStudent(new Student("bolaji@gmail.com", "bolaji saibu", PASSWORD));
 
-        courseService.createCourse(new Course("Java", instructor));
-        courseService.createCourse(new Course("Frontend", "Kasper Kain"));
-        courseService.createCourse(new Course("JPA", "Jafer Alhaboubi"));
-        courseService.createCourse(new Course("Spring Framework", instructor));
-        courseService.createCourse(new Course("SQL", instructor));
+        String kakashiInstructor = "Kakashi Sensei";
+        String konohamaruInstructor = "Konohamaru Sensei";
+        String shinoInstructor = "Shino Aburame";
 
+        studentService.createStudent(new Student("naruto.uzumaki@gmail.com", "Naruto Uzumaki", PASSWORD));
+        studentService.createStudent(new Student("sasuke.uchiha@gmail.com", "Sasuke Uchiha", PASSWORD));
+        studentService.createStudent(new Student("sakura.haruno@gmail.com", "Sakura Haruno", PASSWORD));
+        studentService.createStudent(new Student("kakashi.hatake@gmail.com", "Kakashi Hatake", PASSWORD));
+        studentService.createStudent(new Student("shikamaru.nara@gmail.com", "Shikamaru Nara", PASSWORD));
+        studentService.createStudent(new Student("hinata.hyuga@gmail.com", "Hinata Hyuga", PASSWORD));
+
+        courseService.createCourse(new Course("Shuriken Throwing", kakashiInstructor));
+        courseService.createCourse(new Course("Chakra Expansion", konohamaruInstructor));
+        courseService.createCourse(new Course("Shadow Clone Class", shinoInstructor));
+        courseService.createCourse(new Course("Tree Running", kakashiInstructor));
+        courseService.createCourse(new Course("Get the Bells", kakashiInstructor));
     }
 }
