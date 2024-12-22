@@ -28,10 +28,10 @@ public class StudentService implements StudentI {
     public List<Student> getAllStudents() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
-        List<Student> students = new ArrayList<>();
         Query<Student> studentQuery = session.createQuery("from Student", Student.class);
-        students = studentQuery.getResultList();
+        List<Student> students = studentQuery.getResultList(); // directly get the results here
         tx.commit();
+        session.close();
         return students;
     }
 
@@ -48,6 +48,8 @@ public class StudentService implements StudentI {
     public Student getStudentByEmail(String email) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
+        tx.commit();
+        session.close();
         return (Student) session.get(Student.class, email);
     }
 
@@ -77,6 +79,13 @@ public class StudentService implements StudentI {
 
     @Override
     public List<Course> getStudentCourses(String email) {
-        return List.of();
+        // They want a List but courses is a set, so we need to either cast or fill up a new List with what's in the set
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = session.beginTransaction();
+        Student currentStudent = getStudentByEmail(email);
+        List<Course> courses = new ArrayList<>(currentStudent.getCourses());
+        tx.commit();
+        session.close();
+        return courses;
     }
 }
