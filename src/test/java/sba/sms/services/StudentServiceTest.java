@@ -7,6 +7,7 @@ import org.hibernate.Transaction;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import sba.sms.models.Course;
 import sba.sms.models.Student;
 import sba.sms.utils.CommandLine;
 import sba.sms.utils.HibernateUtil;
@@ -32,10 +33,9 @@ class StudentServiceTest {
 
     @Test
     void getAllStudents() {
-        // Fetch all students
+
         List<Student> actualStudents = studentService.getAllStudents();
 
-        // Ensure the database contains the expected students
         List<Student> expectedStudents = List.of(
                 new Student("naruto.uzumaki@gmail.com", "Naruto Uzumaki", "password"),
                 new Student("sasuke.uchiha@gmail.com", "Sasuke Uchiha", "password"),
@@ -45,14 +45,41 @@ class StudentServiceTest {
                 new Student("hinata.hyuga@gmail.com", "Hinata Hyuga", "password")
         );
 
-        // Assert that the fetched students match the expected ones
         assertThat(actualStudents).hasSameElementsAs(expectedStudents);
     }
 
+    @Test
+    void testStudentCourseRelationship() {
+        // Create a student
+        Student student = new Student("rock.lee@gmail.com", "Rock Lee", "password");
+        studentService.createStudent(student);
+
+        // Create a course
+        Course course = new Course("Taijutsu", "Might Guy");
+        CourseService courseService = new CourseService();
+        courseService.createCourse(course);
+
+        student.addCourse(course);
+        course.addStudent(student);
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.persist(student);
+            session.persist(course);
+            tx.commit();
+        }
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Student fetchedStudent = session.get(Student.class, "rock.lee@gmail.com");
+            assertThat(fetchedStudent.getCourses()).contains(course);
+        }
+    }
+
     @AfterAll
-    static void afterAll() {
-        try (var session = HibernateUtil.getSessionFactory().openSession()) {
-            var tx = session.beginTransaction();
+    static void cleanup() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.createMutationQuery("DELETE FROM Course").executeUpdate();
             session.createMutationQuery("DELETE FROM Student").executeUpdate();
             tx.commit();
         }

@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,6 +15,7 @@ import java.util.Set;
 @ToString(exclude = "courses")
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 
 
 /**
@@ -25,6 +25,8 @@ import java.util.Set;
  * data. The Student class can be viewed as the owner of the bi-directional relationship.
  * Implement Lombok annotations to eliminate boilerplate code.
  */
+//field defaults private access
+
 
 public class Student {
     @Id
@@ -42,7 +44,7 @@ public class Student {
             name = "student_courses",
             joinColumns = @JoinColumn(name = "student_email"),
             inverseJoinColumns = @JoinColumn(name = "courses_id"))
-    Set<Course> courses;
+    Set<Course> courses = new HashSet<>();
 
     public void addCourse(Course course){
         this.courses.add(course);
@@ -53,6 +55,7 @@ public class Student {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.courses = new HashSet<>();
     }
 
     @Override

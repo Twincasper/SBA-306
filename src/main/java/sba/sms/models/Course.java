@@ -2,6 +2,7 @@ package sba.sms.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "students")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 
 /**
  * Course is a POJO, configured as a persistent class that represents (or maps to) a table
@@ -39,7 +41,7 @@ public class Course {
 
     @Column(name = "students")
     @ManyToMany(mappedBy = "courses", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REMOVE, CascadeType.MERGE, CascadeType.PERSIST})
-    private Set<Student> students;
+    private Set<Student> students = new HashSet<>();
 
     @Override
     public boolean equals(Object obj) {
