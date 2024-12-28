@@ -23,6 +23,7 @@ import java.util.Optional;
  */
 
 public class StudentService implements StudentI {
+    private static final CourseService courseService = new CourseService();
 
     @Override
     public List<Student> getAllStudents() {
@@ -63,22 +64,30 @@ public class StudentService implements StudentI {
 
     @Override
     public void registerStudentToCourse(String email, int courseId) {
-        // find the student first and then find the course by id, then use lombok getter and add method to add that course
-        // Maybe check first if the course is already assigned
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = session.beginTransaction();
-        Student studentRegistering = getStudentByEmail(email);
-        Course courseRegistering = session.get(Course.class, courseId);
 
-        if (!studentRegistering.getCourses().contains(courseRegistering)) {
-            studentRegistering.addCourse(courseRegistering);
-        } else {
-            System.out.println("You already registered to the following course silly: " + courseRegistering);
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+
+            Student student = getStudentByEmail(email);
+
+            Course course = courseService.getCourseById(courseId);
+
+            if (!student.getCourses().contains(course)) {
+                student.addCourse(course);
+
+                session.merge(student);
+            } else {
+                System.out.println("You are already registered for this course: " + course);
+            }
+
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
-
-        tx.commit();
-        session.close();
     }
+
 
     @Override
     public List<Course> getStudentCourses(String email) {
